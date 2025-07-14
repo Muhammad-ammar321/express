@@ -1,61 +1,52 @@
 const express = require('express');
 const app = express();
-const port = 3000;
 
 app.use(express.json());
 
-
-let students = [];
+let users = [];
 let nextId = 1;
 
-//  CREATE Student 
-app.post('/students', (req, res) => {
-    const { name, age, email, course } = req.body;
-    if (!name || !email || !course || age == null) {
-    return res.status(400).json({ error: 'All fields are required' });
+app.post('/users', (req, res) => {
+    const { name, age, email } = req.body;
+    if (!name || !email || age == null) {
+        return res.status(400).json({ error: 'All fields are required' });
     }
 
-    const newStudent = { id: nextId++, name, age, email, course };
-    students.push(newStudent);
-    res.status(201).json(newStudent);
+    const newUser = { id: nextId++, name, age, email };
+    users.push(newUser);
+    res.status(201).json(newUser);
 });
 
-//  READ All Students 
-app.get('/students', (req, res) => {
-    res.json(students);
+app.get('/users', (req, res) => {
+    res.json(users);
 });
 
-//  READ One Student 
-app.get('/students/:id', (req, res) => {
-    const student = students.find(s => s.id === parseInt(req.params.id));
-    if (!student) return res.status(404).json({ error: 'Student not found' });
-    res.json(student);
+app.get('/users/:id', (req, res) => {
+    const user = users.find(u => u.id === parseInt(req.params.id));
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json(user);
 });
 
-//  UPDATE Student 
-app.put('/students/:id', (req, res) => {
-    const student = students.find(s => s.id === parseInt(req.params.id));
-    if (!student) return res.status(404).json({ error: 'Student not found' });
+app.put('/users/:id', (req, res) => {
+    const user = users.find(u => u.id === parseInt(req.params.id));
+    if (!user) return res.status(404).json({ error: 'User not found' });
 
-    const { name, age, email, course } = req.body;
-    if (name) student.name = name;
-    if (age != null) student.age = age;
-    if (email) student.email = email;
-    if (course) student.course = course;
+    const { name, age, email } = req.body;
+    if (name) user.name = name;
+    if (age != null) user.age = age;
+    if (email) user.email = email;
 
-    res.json(student);
+    res.json(user);
 });
 
-// DELETE Student 
-app.delete('/students/:id', (req, res) => {
-    const index = students.findIndex(s => s.id === parseInt(req.params.id));
-    if (index === -1) return res.status(404).json({ error: 'Student not found' });
+app.delete('/users/:id', (req, res) => {
+    const index = users.findIndex(u => u.id === parseInt(req.params.id));
+    if (index === -1) return res.status(404).json({ error: 'User not found' });
 
-    students.splice(index, 1);
-    res.json({ message: 'Student deleted' });
+    users.splice(index, 1);
+    res.json({ message: 'User deleted' });
 });
 
-// Start the server
-app.listen(port, () => {
-    console.log(`🎓 Student Dashboard API running at http://localhost:${port}`);
+app.listen(3000, () => {
+    console.log("Server is running on port:", 3000);
 });
